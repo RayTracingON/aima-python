@@ -143,7 +143,7 @@ def beam_search(problem, f, beam_width):
     # Return a search node containing a solved state.
     # Experiment with the beam width in the test code to find a solution.
     # Replace the line below with your code.
-    
+    raise NotImplementedError
 
 if __name__ == "__main__":
 
