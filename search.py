@@ -425,7 +425,7 @@ def astar_search(problem, h=None, display=False):
 
 class EightPuzzle(Problem):
     """ The problem of sliding tiles numbered from 1 to 8 on a 3x3 board, where one of the
-    squares is a blank. A state is represented as a tuple of length 9, where  element at
+    squares is a blank. A state is represented as a tuple of length ·9, where  element at
     index i represents the tile number  at index i (0 if it's an empty square) """
 
     def __init__(self, initial, goal=(1, 2, 3, 4, 5, 6, 7, 8, 0)):
