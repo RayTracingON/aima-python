@@ -1,6 +1,7 @@
 from time import time
 from search import *
 from assignment1aux import *
+from heapq import heappush, heappop
 
 def read_initial_state_from_file(filename):
     # Task 1
@@ -132,19 +133,70 @@ class ZenPuzzleGarden(Problem):
                 return False
         return True
         
+def findhuristic(node):
+    state=node.state
+
+    # Add a penalty for disconnected empty regions to encourage filling contiguous areas
+    def count_disconnected_regions(grid):
+        visited = set()
+        regions = 0
+
+        def dfs(x, y):
+            if (x, y) in visited or grid[x][y] != '':
+                return
+            visited.add((x, y))
+            for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < len(grid) and 0 <= ny < len(grid[0]):
+                    dfs(nx, ny)
+
+        for i in range(len(grid)):
+            for j in range(len(grid[0])):
+                if grid[i][j] == '' and (i, j) not in visited:
+                    regions += 1
+                    dfs(i, j)
+
+        return regions
+
+    disconnected_regions = count_disconnected_regions(state[0])
+
+    # Combine the two components into the heuristic
+    return disconnected_regions
+    
 
 # Task 3
 # Implement an A* heuristic cost function and assign it to the variable below.
-astar_heuristic_cost = lambda n: sum(row.count('') for row in n.state[0])
-
+#astar_heuristic_cost = lambda n: sum(row.count('') for row in n.state[0])
+astar_heuristic_cost = lambda n: findhuristic(n)
 def beam_search(problem, f, beam_width):
     # Task 4
     # Implement a beam-width version A* search.
     # Return a search node containing a solved state.
     # Experiment with the beam width in the test code to find a solution.
     # Replace the line below with your code.
-    raise NotImplementedError
+    frontier = []
+    heappush(frontier, (f(Node(problem.initial)), Node(problem.initial)))
+    explored = set()
 
+    while frontier:
+        current_level = []
+        while frontier:
+            current_level.append(heappop(frontier)[1])
+
+        for node in current_level:
+            if problem.goal_test(node.state):
+                return node
+
+        next_level = []
+        for node in current_level:
+            explored.add(node.state)
+            for child in node.expand(problem):
+                if child.state not in explored:
+                    heappush(next_level, (f(child), child))
+
+        frontier = sorted(next_level)[:beam_width]
+
+    return None
 if __name__ == "__main__":
 
     # Task 1 test code
@@ -159,7 +211,7 @@ if __name__ == "__main__":
     print(f'Breadth-first graph search took {after_time - before_time} seconds.')
     if node:
         print(f'Its solution with a cost of {node.path_cost} is animated below.')
-        animate(node)
+        #animate(node)
     else:
         print('No solution was found.')
 
