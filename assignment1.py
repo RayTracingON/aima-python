@@ -140,7 +140,6 @@ def findhuristic(node):
     def count_disconnected_regions(grid):
         visited = set()
         regions = 0
-
         def dfs(x, y):
             if (x, y) in visited or grid[x][y] != '':
                 return
@@ -155,7 +154,6 @@ def findhuristic(node):
                 if grid[i][j] == '' and (i, j) not in visited:
                     regions += 1
                     dfs(i, j)
-
         return regions
 
     disconnected_regions = count_disconnected_regions(state[0])
@@ -174,29 +172,27 @@ def beam_search(problem, f, beam_width):
     # Return a search node containing a solved state.
     # Experiment with the beam width in the test code to find a solution.
     # Replace the line below with your code.
+    f = memoize(f, 'f')
+    node = Node(problem.initial)
     frontier = []
-    heappush(frontier, (f(Node(problem.initial)), Node(problem.initial)))
+    frontier.append(node)
     explored = set()
 
     while frontier:
-        current_level = []
-        while frontier:
-            current_level.append(heappop(frontier)[1])
-
-        for node in current_level:
+        for node in frontier:
             if problem.goal_test(node.state):
                 return node
-
-        next_level = []
-        for node in current_level:
+        next_frontier = []
+        for node in frontier:
             explored.add(node.state)
             for child in node.expand(problem):
-                if child.state not in explored:
-                    heappush(next_level, (f(child), child))
-
-        frontier = sorted(next_level)[:beam_width]
-
+                if child.state not in explored and child not in frontier:
+                    next_frontier.append(child)
+        next_frontier.sort(key=f)
+        frontier = next_frontier[:beam_width]
     return None
+
+
 if __name__ == "__main__":
 
     # Task 1 test code
@@ -225,7 +221,7 @@ if __name__ == "__main__":
     print(f'A* search took {after_time - before_time} seconds.')
     if node:
         print(f'Its solution with a cost of {node.path_cost} is animated below.')
-        animate(node)
+        #animate(node)
     else:
         print('No solution was found.')
     
@@ -234,7 +230,7 @@ if __name__ == "__main__":
     
     print('Running beam search.')
     before_time = time()
-    node = beam_search(garden, lambda n: n.path_cost + astar_heuristic_cost(n), 50)
+    node = beam_search(garden, lambda n: n.path_cost + astar_heuristic_cost(n), 500)
     after_time = time()
     print(f'Beam search took {after_time - before_time} seconds.')
     if node:
