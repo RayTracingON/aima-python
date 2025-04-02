@@ -164,7 +164,6 @@ def findhuristic(node):
 
 # Task 3
 # Implement an A* heuristic cost function and assign it to the variable below.
-#astar_heuristic_cost = lambda n: sum(row.count('') for row in n.state[0])
 astar_heuristic_cost = lambda n: findhuristic(n)
 def beam_search(problem, f, beam_width):
     # Task 4
@@ -207,7 +206,7 @@ if __name__ == "__main__":
     print(f'Breadth-first graph search took {after_time - before_time} seconds.')
     if node:
         print(f'Its solution with a cost of {node.path_cost} is animated below.')
-        #animate(node)
+        animate(node)
     else:
         print('No solution was found.')
 
@@ -221,7 +220,7 @@ if __name__ == "__main__":
     print(f'A* search took {after_time - before_time} seconds.')
     if node:
         print(f'Its solution with a cost of {node.path_cost} is animated below.')
-        #animate(node)
+        animate(node)
     else:
         print('No solution was found.')
     
