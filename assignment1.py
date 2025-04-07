@@ -46,39 +46,31 @@ class ZenPuzzleGarden(Problem):
                 if state[0][i][len(state[0][i])-1]=='':
                     action.append(((i,len(state[0][i])-1),'left'))
         else:
-            point=list(state[1])
-            if state[2]=='up':
-                if point[0]>0 and state[0][point[0]-1][point[1]]=='' or point[0]==0:
-                    action.append((tuple(point),'up'))
-                else:
-                    if point[1]>0 and state[0][point[0]][point[1]-1]=='' or point[1]==0:
-                        action.append((tuple(point),'left'))
-                    if point[1]<len(state[0][0])-1 and state[0][point[0]][point[1]+1]=='' or point[1]==len(state[0][0])-1:
-                        action.append((tuple(point),'right'))
-            elif state[2]=='down':
-                if point[0]<len(state[0])-1 and state[0][point[0]+1][point[1]]=='' or point[0]==len(state[0])-1:
-                    action.append((tuple(point),'down'))
-                else:
-                    if point[1]>0 and state[0][point[0]][point[1]-1]=='' or point[1]==0:
-                        action.append((tuple(point),'left'))
-                    if point[1]<len(state[0][0])-1 and state[0][point[0]][point[1]+1]=='' or point[1]==len(state[0][0])-1:
-                        action.append((tuple(point),'right'))
-            elif state[2]=='left':
-                if point[1]>0 and state[0][point[0]][point[1]-1]=='' or point[1]==0:
-                    action.append((tuple(point),'left'))
-                else:
-                    if point[0]<len(state[0])-1 and state[0][point[0]+1][point[1]]=='' or point[0]==len(state[0])-1:
-                        action.append((tuple(point),'down'))
-                    if point[0]<len(state[0])-1 and state[0][point[0]-1][point[1]]=='' or point[0]==0:
-                        action.append((tuple(point),'up'))
+            direction=state[2]
+            current_i, current_j = state[1]
+            height = len(state[0])
+            width=len(state[0][0])
+            # Calculate possible turning directions (90-degree turns)
+            if direction in ['up', 'down']:
+                possible_dirs = ['left', 'right']
             else:
-                if point[1]<len(state[0][0])-1 and state[0][point[0]][point[1]+1]=='' or point[1]==len(state[0][0])-1:
-                    action.append((tuple(point),'right'))
+                possible_dirs = ['up', 'down']
+            
+            # Validate each possible direction
+            for new_dir in possible_dirs:
+                di, dj = 0, 0
+                if new_dir == 'up': di = -1
+                elif new_dir == 'down': di = 1
+                elif new_dir == 'left': dj = -1
+                else: dj = 1
+                
+                ni, nj = current_i + di, current_j + dj
+                # Check next tile validity
+                if 0 <= ni < height and 0 <= nj < width:
+                    if state[0][ni][nj] == '':
+                        action.append(((current_i, current_j), new_dir))
                 else:
-                    if point[0]<len(state[0])-1 and state[0][point[0]+1][point[1]]=='' or point[0]==len(state[0])-1:
-                        action.append((tuple(point),'down'))
-                    if point[0]>0 and state[0][point[0]-1][point[1]]=='' or point[0]==0:
-                        action.append((tuple(point),'up'))
+                    action.append(((current_i, current_j), new_dir))
         return action
 
     def result(self, state, action):
