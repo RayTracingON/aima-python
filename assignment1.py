@@ -47,30 +47,25 @@ class ZenPuzzleGarden(Problem):
                     action.append(((i,len(state[0][i])-1),'left'))
         else:
             direction=state[2]
-            current_i, current_j = state[1]
+            x, y = state[1]
             height = len(state[0])
             width=len(state[0][0])
-            # Calculate possible turning directions (90-degree turns)
             if direction in ['up', 'down']:
                 possible_dirs = ['left', 'right']
             else:
                 possible_dirs = ['up', 'down']
-            
-            # Validate each possible direction
             for new_dir in possible_dirs:
-                di, dj = 0, 0
-                if new_dir == 'up': di = -1
-                elif new_dir == 'down': di = 1
-                elif new_dir == 'left': dj = -1
-                else: dj = 1
-                
-                ni, nj = current_i + di, current_j + dj
-                # Check next tile validity
-                if 0 <= ni < height and 0 <= nj < width:
-                    if state[0][ni][nj] == '':
-                        action.append(((current_i, current_j), new_dir))
+                dx, dy = 0, 0
+                if new_dir == 'up': dx = -1
+                elif new_dir == 'down': dx = 1
+                elif new_dir == 'left': dy = -1
+                else: dy = 1
+                fx, fy = x + dx, y + dy
+                if 0 <= fx < height and 0 <= fy < width:
+                    if state[0][fx][fy] == '':
+                        action.append(((x, y), new_dir))
                 else:
-                    action.append(((current_i, current_j), new_dir))
+                    action.append(((x, y), new_dir))
         return action
 
     def result(self, state, action):
