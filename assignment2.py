@@ -8,7 +8,6 @@ def read_tiles_from_file(filename):
     tiles = []
     for line in lines:
         tile_row = []
-        print(line)
         for i in range(len(line)):
             char = line[i]
             if char == ' ':
@@ -22,7 +21,6 @@ def read_tiles_from_file(filename):
             elif char == 'T':
                 tile_row.append((0,1,2))
         tiles.append(tile_row)
-    print(tuple(tuple(row) for row in tiles))
     return tuple(tuple(row) for row in tiles)
 
 
