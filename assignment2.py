@@ -53,8 +53,26 @@ class KNetWalk(Problem):
         return self.value(state) == self.max_fitness
 
     def value(self, state):
-        print(self.tiles,state)
-        visualise(self.tiles, state)
+        count=0
+        direction=[(0,1),(-1,0),(0,-1),(1,0)]
+        for i in range(len(self.tiles)):
+            for j in range(len(self.tiles[i])):
+                for k in self.tiles[i][j]:
+                    k+=state[i*len(self.tiles)+j]
+                    k=k%4
+                    if k == 0 and j+1<len(self.tiles[i]):
+                        if (2-state[i*len(self.tiles)+j])%4 in self.tiles[i][j]:
+                            count+=1
+                    if k==1 and i-1>=0:
+                        if (3-state[i*len(self.tiles)+j])%4 in self.tiles[i][j]:
+                            count+=1
+                    if k==2 and j-1>=0:
+                        if (4-state[i*len(self.tiles)+j])%4 in self.tiles[i][j]:
+                            count+=1
+                    if k==3 and i+1<len(self.tiles):
+                        if (1-state[i*len(self.tiles)+j])%4 in self.tiles[i][j]:
+                            count+=1
+        return count
         
 # Task 3
 # Configure an exponential schedule for simulated annealing.
