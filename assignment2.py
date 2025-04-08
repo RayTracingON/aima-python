@@ -3,10 +3,28 @@ from random import randint
 from assignment2aux import *
 
 def read_tiles_from_file(filename):
-    # Task 1
-    # Return a tile board constructed using a configuration in a file.
-    # Replace the line below with your code.
-    raise NotImplementedError
+    with open(filename, 'r') as file:
+        lines = file.readlines()
+    tiles = []
+    for line in lines:
+        tile_row = []
+        print(line)
+        for i in range(len(line)):
+            char = line[i]
+            if char == ' ':
+                tile_row.append(())
+            elif char == 'i':
+                tile_row.append((0,))
+            elif char == 'L':
+                tile_row.append((0,1))
+            elif char == 'I':
+                tile_row.append((0,2))
+            elif char == 'T':
+                tile_row.append((0,1,2))
+        tiles.append(tile_row)
+    print(tuple(tuple(row) for row in tiles))
+    return tuple(tuple(row) for row in tiles)
+
 
 class KNetWalk(Problem):
     def __init__(self, tiles):
@@ -71,10 +89,10 @@ def stochastic_beam_search(problem, population, limit=1000):
 if __name__ == '__main__':
 
     # Task 1 test code
-    '''
+    
     network = KNetWalk('assignment2config.txt')
     visualise(network.tiles, network.initial)
-    '''
+    
 
     # Task 2 test code
     '''
