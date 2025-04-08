@@ -57,19 +57,19 @@ class KNetWalk(Problem):
         for i in range(len(self.tiles)):
             for j in range(len(self.tiles[i])):
                 for z in self.tiles[i][j]:
-                    k=state[i*len(self.tiles)+j]+z
+                    k=state[i*len(self.tiles[0])+j]+z
                     k=k%4
                     if k == 0 and j+1<len(self.tiles[i]):
-                        if (2-state[i*len(self.tiles)+j+1])%4 in self.tiles[i][j+1]:
+                        if (2-state[i*len(self.tiles[0])+j+1])%4 in self.tiles[i][j+1]:
                             count+=1
                     if k==1 and i-1>=0:
-                        if (3-state[(i-1)*len(self.tiles)+j])%4 in self.tiles[i-1][j]:
+                        if (3-state[(i-1)*len(self.tiles[0])+j])%4 in self.tiles[i-1][j]:
                             count+=1
                     if k==2 and j-1>=0:
-                        if (4-state[i*len(self.tiles)+j-1])%4 in self.tiles[i][j-1]:
+                        if (4-state[i*len(self.tiles[0])+j-1])%4 in self.tiles[i][j-1]:
                             count+=1
                     if k==3 and i+1<len(self.tiles):
-                        if (1-state[(i+1)*len(self.tiles)+j])%4 in self.tiles[i+1][j]:
+                        if (1-state[(i+1)*len(self.tiles[0])+j])%4 in self.tiles[i+1][j]:
                             count+=1
         return count
         
