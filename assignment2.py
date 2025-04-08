@@ -55,7 +55,7 @@ class KNetWalk(Problem):
     def value(self, state):
         count=0
         for i in range(len(self.tiles)):
-            for j in range(len(self.tiles[i])):
+            for j in range(len(self.tiles[0])):
                 for z in self.tiles[i][j]:
                     k=state[i*len(self.tiles[0])+j]+z
                     k=k%4
