@@ -53,11 +53,9 @@ class KNetWalk(Problem):
         return self.value(state) == self.max_fitness
 
     def value(self, state):
-        # Task 2
-        # Return an integer fitness value of a given state.
-        # Replace the line below with your code.
-        raise NotImplementedError
-
+        print(self.tiles,state)
+        visualise(self.tiles, state)
+        
 # Task 3
 # Configure an exponential schedule for simulated annealing.
 sa_schedule = exp_schedule(k=20, lam=0.005, limit=100)
@@ -89,11 +87,11 @@ if __name__ == '__main__':
     # Task 1 test code
     
     network = KNetWalk('assignment2config.txt')
-    visualise(network.tiles, network.initial)
+    #visualise(network.tiles, network.initial)
     
 
     # Task 2 test code
-    '''
+    
     run = 0
     method = 'hill climbing'
     while True:
@@ -108,7 +106,7 @@ if __name__ == '__main__':
         run += 1
     print(f'{method} run {run}: solution found')
     visualise(network.tiles, state)
-    '''
+    
 
     # Task 3 test code
     '''
