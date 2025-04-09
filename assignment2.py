@@ -75,7 +75,7 @@ class KNetWalk(Problem):
         
 # Task 3
 # Configure an exponential schedule for simulated annealing.
-sa_schedule = exp_schedule(k=20, lam=0.005, limit=100)
+sa_schedule = exp_schedule(k=40, lam=0.5, limit=100)
 
 # Task 4
 # Configure parameters for the genetic algorithm.
@@ -108,7 +108,7 @@ if __name__ == '__main__':
     
 
     # Task 2 test code
-    
+    '''
     run = 0
     method = 'hill climbing'
     while True:
@@ -123,10 +123,10 @@ if __name__ == '__main__':
         run += 1
     print(f'{method} run {run}: solution found')
     visualise(network.tiles, state)
-    
+    '''
 
     # Task 3 test code
-    '''
+    
     run = 0
     method = 'simulated annealing'
     while True:
@@ -141,7 +141,7 @@ if __name__ == '__main__':
         run += 1
     print(f'{method} run {run}: solution found')
     visualise(network.tiles, state)
-    '''
+    
 
     # Task 4 test code
     '''
