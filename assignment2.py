@@ -1,6 +1,8 @@
 from search import *
 from random import randint
 from assignment2aux import *
+from heapq import heappush, heappop
+
 
 def read_tiles_from_file(filename):
     with open(filename, 'r') as file:
@@ -79,9 +81,9 @@ sa_schedule = exp_schedule(k=40, lam=0.5, limit=100)
 
 # Task 4
 # Configure parameters for the genetic algorithm.
-pop_size = None
+pop_size = 10
 num_gen = 1000
-mutation_prob = 0.1
+mutation_prob = 0.2
 
 def local_beam_search(problem, population):
     # Task 5
@@ -89,15 +91,52 @@ def local_beam_search(problem, population):
     # Return a goal state if found in the population.
     # Return the fittest state in the population if the next population contains no fitter state.
     # Replace the line below with your code.
-    raise NotImplementedError
+    beam_width = len(population)
+    frontier = []  
+    for state in population:
+        heappush(frontier, (-problem.value(state), state))  
 
+    next_population = []  
+    current_population = []
+    return_population = []
+    while frontier:
+        current_population.append(heappop(frontier)[1])  
+
+    for state in current_population:
+        if problem.goal_test(state):  
+            return next_population,state
+        for action in problem.actions(state):
+            child = problem.result(state, action)
+            heappush(next_population, (-problem.value(child), child)) 
+    frontier = sorted(next_population, key=lambda x: x[0])[:beam_width]
+    for i in frontier:
+        return_population.append(i[1])
+    return return_population,frontier[0][1]
+    
+
+    
 def stochastic_beam_search(problem, population, limit=1000):
     # Task 6
     # Implement stochastic beam search.
     # Return a goal state if found in the population.
     # Return the fittest state in the population if the generation limit is reached.
     # Replace the line below with your code.
-    raise NotImplementedError
+    beam_width = len(population) 
+    frontier = []  
+    for state in population:
+        heappush(frontier, (-problem.value(state), state))
+    next_population = []
+    while frontier and len(next_population) < beam_width:
+        _, state = heappop(frontier)
+        for action in problem.actions(state):
+            child = problem.result(state, action)
+            if problem.goal_test(child):
+                return child
+            heappush(frontier, (problem.value(child), child))
+            if len(next_population) < beam_width:
+                next_population.append(child)
+    _, state = heappop(frontier)
+    return state
 
 if __name__ == '__main__':
 
@@ -126,7 +165,7 @@ if __name__ == '__main__':
     '''
 
     # Task 3 test code
-    
+    '''
     run = 0
     method = 'simulated annealing'
     while True:
@@ -141,10 +180,11 @@ if __name__ == '__main__':
         run += 1
     print(f'{method} run {run}: solution found')
     visualise(network.tiles, state)
-    
+    '''
 
     # Task 4 test code
-    '''
+    
+    '''    
     run = 0
     method = 'genetic algorithm'
     while True:
@@ -162,16 +202,19 @@ if __name__ == '__main__':
     print(f'{method} run {run}: solution found')
     visualise(network.tiles, state)
     '''
+    
+    
 
-    # Task 5 test code
-    '''
+    # Task 5 test code  
+    
     run = 0
     method = 'local beam search'
+    list = [network.generate_random_state() for _ in range(100)]
     while True:
         network = KNetWalk('assignment2config.txt')
         height = len(network.tiles)
         width = len(network.tiles[0])
-        state = local_beam_search(network, [network.generate_random_state() for _ in range(100)])
+        list,state = local_beam_search(network, list)
         if network.goal_test(state):
             break
         else:
@@ -181,10 +224,11 @@ if __name__ == '__main__':
         run += 1
     print(f'{method} run {run}: solution found')
     visualise(network.tiles, state)
-    '''
+    
+    
 
     # Task 6 test code
-    '''
+'''    
     run = 0
     method = 'stochastic beam search'
     while True:
@@ -200,5 +244,5 @@ if __name__ == '__main__':
             visualise(network.tiles, state)
         run += 1
     print(f'{method} run {run}: solution found')
-    visualise(network.tiles, state)
-    '''
+    visualise(network.tiles, state)'''
+    
