@@ -5,11 +5,14 @@ from heapq import heappush, heappop
 
 
 def read_tiles_from_file(filename):
+    # Read the tiles from a file and convert them into a list of tuples
+    # Task 1
     with open(filename, 'r') as file:
         lines = file.readlines()
     tiles = []
     for line in lines:
         tile_row = []
+        #create a tile list
         for i in range(len(line)):
             char = line[i]
             if char == ' ':
@@ -55,10 +58,13 @@ class KNetWalk(Problem):
         return self.value(state) == self.max_fitness
 
     def value(self, state):
+        # Task 2
         count=0
         for i in range(len(self.tiles)):
             for j in range(len(self.tiles[0])):
                 for z in self.tiles[i][j]:
+                    #search each tile
+                    #check if the tile is connect to others
                     k=state[i*len(self.tiles[0])+j]+z
                     k=k%4
                     if k == 0 and j+1<len(self.tiles[i]):
@@ -90,7 +96,7 @@ def local_beam_search(problem, population):
     # Implement local beam search.
     # Return a goal state if found in the population.
     # Return the fittest state in the population if the next population contains no fitter state.
-    # Replace the line below with your code.
+
     beam_width = len(population)
     frontier = []  
     for state in population:
@@ -103,14 +109,19 @@ def local_beam_search(problem, population):
         current_population.append(heappop(frontier)[1])  
 
     for state in current_population:
+        # check if the state is a goal state
         if problem.goal_test(state):  
             return next_population,state
+        # adding them in the list
         for action in problem.actions(state):
             child = problem.result(state, action)
             heappush(next_population, (-problem.value(child), child)) 
+    #sort the first beam_width states in the next population
+    # and add them to the return population
     frontier = sorted(next_population, key=lambda x: x[0])[:beam_width]
     for i in frontier:
         return_population.append(i[1])
+    #return population and the fittest state in the population
     return return_population,frontier[0][1]
     
 
@@ -120,7 +131,8 @@ def stochastic_beam_search(problem, population, limit=1000):
     # Implement stochastic beam search.
     # Return a goal state if found in the population.
     # Return the fittest state in the population if the generation limit is reached.
-    # Replace the line below with your code.
+
+    #same as Task 5
     beam_width = len(population) 
     frontier = []  
     for state in population:
@@ -147,7 +159,7 @@ if __name__ == '__main__':
     
 
     # Task 2 test code
-    '''
+    
     run = 0
     method = 'hill climbing'
     while True:
@@ -162,10 +174,10 @@ if __name__ == '__main__':
         run += 1
     print(f'{method} run {run}: solution found')
     visualise(network.tiles, state)
-    '''
+    
 
     # Task 3 test code
-    '''
+    
     run = 0
     method = 'simulated annealing'
     while True:
@@ -180,11 +192,11 @@ if __name__ == '__main__':
         run += 1
     print(f'{method} run {run}: solution found')
     visualise(network.tiles, state)
-    '''
+    
 
     # Task 4 test code
     
-    '''    
+      
     run = 0
     method = 'genetic algorithm'
     while True:
@@ -201,7 +213,6 @@ if __name__ == '__main__':
         run += 1
     print(f'{method} run {run}: solution found')
     visualise(network.tiles, state)
-    '''
     
     
 
@@ -228,13 +239,13 @@ if __name__ == '__main__':
     
 
     # Task 6 test code
-'''    
     run = 0
     method = 'stochastic beam search'
     while True:
         network = KNetWalk('assignment2config.txt')
         height = len(network.tiles)
         width = len(network.tiles[0])
+        # Create a random population of states
         state = stochastic_beam_search(network, [network.generate_random_state() for _ in range(100)])
         if network.goal_test(state):
             break
@@ -244,5 +255,5 @@ if __name__ == '__main__':
             visualise(network.tiles, state)
         run += 1
     print(f'{method} run {run}: solution found')
-    visualise(network.tiles, state)'''
+    visualise(network.tiles, state)
     
