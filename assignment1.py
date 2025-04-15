@@ -34,7 +34,8 @@ class ZenPuzzleGarden(Problem):
         # Return a list of all allowed actions in a given state.
         # Replace the line below with your code.
         action=[]
-        if state[1] is None:
+        #if no more action, start to find the new way
+        if state[1] is None: 
             for i in range(len(state[0][0])):
                 if state[0][0][i]=='':
                     action.append(((0,i),'down'))
@@ -45,6 +46,7 @@ class ZenPuzzleGarden(Problem):
                     action.append(((i,0),'right'))
                 if state[0][i][len(state[0][i])-1]=='':
                     action.append(((i,len(state[0][i])-1),'left'))
+        #if there is a point, find the new way
         else:
             direction=state[2]
             x, y = state[1]
@@ -76,6 +78,7 @@ class ZenPuzzleGarden(Problem):
         point=list(action[0])
         direction=action[1]
         while point[0]<=len(state[0])-1 and point[1]>=0 and point[1]<=len(state[0][0])-1 and point[0]>=0:
+            #if the point is out of the map, return the state
             if direction=='down':
                 if point[0]+1>len(state[0])-1:
                     listState[point[0]][point[1]]=direction
@@ -122,7 +125,6 @@ class ZenPuzzleGarden(Problem):
         
 def findhuristic(node):
     state=node.state
-
     # Add a penalty for disconnected empty regions to encourage filling contiguous areas
     def count_disconnected_regions(grid):
         visited = set()
