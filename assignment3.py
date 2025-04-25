@@ -138,19 +138,31 @@ class MehrSteine(StochasticGame):
         # Task 2.2
         # Return the state's utility to the player.
         # Replace the line below with your code.
-        raise NotImplementedError
+        if player == 'R':
+            return state.utility
+        elif player == 'B':
+            return -state.utility
 
     def compute_utility(self, board):
         # Task 2.3
         # Return the utility of the board.
         # Replace the line below with your code.
-        raise NotImplementedError
+        if (0,0) in board['B'] or board['R'] == None:
+            return -1
+        elif (self.board_size - 1, self.board_size - 1) in board['R'] or board['B'] == None:
+            return 1
+        else:
+            return 0
 
     def chances(self, state):
         # Task 2.4
         # Return a list of possible chance outcomes.
         # Replace the line below with your code.
-        raise NotImplementedError
+        num= self.num_piece
+        a=[]
+        for i in range(num):
+            a.append(i)
+        return a
 
     def outcome(self, state, chance):
         # Task 2.5
@@ -287,7 +299,7 @@ if __name__ == '__main__':
     
 
     # Task 2 test code
-    '''
+    
     num_win = 0
     num_loss = 0
     for _ in range(50):
@@ -301,7 +313,7 @@ if __name__ == '__main__':
         else:
             num_win += 1
     print(f'MCTS with random playout vs. random-move player: {num_win} wins and {num_loss} losses', end='\n\n')
-    '''
+    
 
     # Task 3 test code
     '''
