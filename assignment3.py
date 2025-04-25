@@ -44,19 +44,43 @@ class EinStein(Game):
         # Task 1.1
         # Return a state resulting from the move.
         # Replace the line below with your code.
-        raise NotImplementedError
+        new_board = deepcopy(state.board)
+        #print(state,move)
+        if state.to_move == 'R':
+            new_board['R'] = move
+            if new_board['B'] == move:
+                new_board['B'] = None
+            new_utility = self.compute_utility(new_board)
+            new_moves = self.compute_moves(new_board, 'B')
+            return GameState(to_move='B', utility=new_utility, board=new_board, moves=new_moves)
+        else:
+            new_board['B'] = move
+            if new_board['R'] == move:
+                new_board['R'] = None
+            new_utility = self.compute_utility(new_board)
+            new_moves = self.compute_moves(new_board, 'R')
+            return GameState(to_move='R', utility=new_utility, board=new_board, moves=new_moves)
+
 
     def utility(self, state, player):
         # Task 1.2
         # Return the state's utility to the player.
         # Replace the line below with your code.
-        raise NotImplementedError
+        if player == 'R':
+            return state.utility
+        elif player == 'B':
+            return -state.utility
 
     def compute_utility(self, board):
         # Task 1.3
         # Return the utility of the board.
         # Replace the line below with your code.
-        raise NotImplementedError
+        if board['R'] == (2, 2) or board['B'] == None:
+            return 1
+        elif board['B'] == (0, 0) or board['R'] == None:
+            return -1
+        else:
+            return 0
 
 class MehrSteine(StochasticGame):
 
@@ -246,7 +270,7 @@ def schwarz_mcts_player(game, state):
 if __name__ == '__main__':
 
     # Task 1 test code
-    '''
+    
     num_win = 0
     num_loss = 0
     for _ in range(50):
@@ -260,7 +284,7 @@ if __name__ == '__main__':
         else:
             num_win += 1
     print(f'alpha-beta pruned minimax player vs. random-move player: {num_win} wins and {num_loss} losses', end='\n\n')
-    '''
+    
 
     # Task 2 test code
     '''
