@@ -135,25 +135,31 @@ class MehrSteine(StochasticGame):
         # Replace the line below with your code.
             
         print(state,move,"res")
-        new_board = state.board
+        new_board = deepcopy(state.board) 
         if state.to_move == 'R':
-            if move[1] in new_board['B']:
-                new_board['B'].remove(move[1])
-            elif new_board['R'].count(move[0])==0:
-                new_board['R'][move[0]] = move[1]
-            elif new_board['R'].count(move[0])==1:
-                new_board['R'][move[0]] = None
+            if move[1] in new_board['B']:                
+                eaten_index = new_board['B'].index(move[1])
+                new_board['B'][eaten_index] = None
+            elif new_board['R'].count(move[1])==1:
+                eaten_index = new_board['R'].index(move[1])
+                new_board['R'][eaten_index] = None
             new_utility = self.compute_utility(new_board)
+            if new_utility != 0:
+                return StochasticGameState(to_move=None, utility=new_utility, board=new_board,moves=None, chance=None)
+            new_board['R'][move[0]] = move[1]
             print(new_board,"resfinalR")
             return StochasticGameState(to_move='B', utility=new_utility, board=new_board,moves=None, chance=None)
         else:
             if move[1] in new_board['R']:
-                new_board['R'].remove(move[1])
-            elif new_board['B'].count(move[0])==0:
-                new_board['B'][move[0]] = move[1]
-            elif new_board['B'].count(move[0])==1:
-                new_board['B'][move[0]] = None
+                eaten_index = new_board['R'].index(move[1])
+                new_board['R'][eaten_index] = None
+            elif new_board['B'].count(move[1])==1:
+                eaten_index = new_board['B'].index(move[1])
+                new_board['B'][eaten_index] = None
             new_utility = self.compute_utility(new_board)
+            if new_utility != 0:
+                return StochasticGameState(to_move=None, utility=new_utility, board=new_board,moves=None, chance=None)
+            new_board['B'][move[0]] = move[1]
             print(new_board,"resfinalB")
             return StochasticGameState(to_move='R', utility=new_utility, board=new_board,moves=None, chance=None)
 
@@ -170,9 +176,12 @@ class MehrSteine(StochasticGame):
         # Task 2.3
         # Return the utility of the board.
         # Replace the line below with your code.
-        if (0,0) in board['B'] or board['R'] == None:
+        print(board,"comut")
+        if (0,0) in board['B'] or board['R'].count(None)==self.num_piece:
+            print("Bwin")
             return -1
-        elif (self.board_size - 1, self.board_size - 1) in board['R'] or board['B'] == None:
+        elif (self.board_size - 1, self.board_size - 1) in board['R'] or board['B'].count(None)==self.num_piece:
+            print("Rwin")
             return 1
         else:
             return 0
@@ -192,8 +201,21 @@ class MehrSteine(StochasticGame):
         # Return a state resulting from the chance outcome.
         # Replace the line below with your code.
         print(state.to_move,chance,"outcome")
+        saved = None
+        if state.board[state.to_move][chance] == None:#问题在这里
+            while chance<self.num_piece-1:
+                chance+=1
+                if state.board[state.to_move][chance] != None:
+                    saved=chance
+                    break
+            while chance>0:
+                chance-=1
+                if state.board[state.to_move][chance] != None:
+                    break
+            if saved:
+                chance=saved
         move=self.compute_moves(state.board, state.to_move, chance)
-        return StochasticGameState(to_move=state.to_move, utility=state.utility, board=state.board, moves=move, chance=chance)
+        return StochasticGameState(to_move=state.to_move, utility=state.utility, board=state.board, moves=move, chance=state.chance)
 
     def probability(self, chance):
         # Task 2.6
@@ -219,6 +241,8 @@ def stochastic_monte_carlo_tree_search(state, game, playout_policy, N=1000):
         while not game.terminal_test(state):
             action = playout_policy(game, state)
             state = game.result(state, action)
+            if game.terminal_test(state):
+                break
             chance = random.choice(game.chances(state))
             state = game.outcome(state, chance)
         v = game.utility(state, player)
