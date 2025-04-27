@@ -45,7 +45,6 @@ class EinStein(Game):
         # Return a state resulting from the move.
         # Replace the line below with your code.
         new_board = deepcopy(state.board)
-        #print(state,move)
         if state.to_move == 'R':
             new_board['R'] = move
             if new_board['B'] == move:
@@ -95,6 +94,7 @@ class MehrSteine(StochasticGame):
         self.initial = StochasticGameState(to_move='R', utility=0, board=board, moves=None, chance=None)
 
     def compute_moves(self, board, to_move, index):
+        print(to_move, index,"co")
         moves = []
         coordinates = board[to_move][index]
         if to_move == 'R':
@@ -111,6 +111,7 @@ class MehrSteine(StochasticGame):
                     moves.append((index, (coordinates[0] - 1, coordinates[1] - 1)))
             if coordinates[1] > 0:
                 moves.append((index, (coordinates[0], coordinates[1] - 1)))
+        print(moves,"comfinal")
         return moves
 
     def display(self, state):
@@ -132,7 +133,29 @@ class MehrSteine(StochasticGame):
         # Task 2.1
         # Return a state resulting from the move.
         # Replace the line below with your code.
-        raise NotImplementedError
+            
+        print(state,move,"res")
+        new_board = state.board
+        if state.to_move == 'R':
+            if move[1] in new_board['B']:
+                new_board['B'].remove(move[1])
+            elif new_board['R'].count(move[0])==0:
+                new_board['R'][move[0]] = move[1]
+            elif new_board['R'].count(move[0])==1:
+                new_board['R'][move[0]] = None
+            new_utility = self.compute_utility(new_board)
+            print(new_board,"resfinalR")
+            return StochasticGameState(to_move='B', utility=new_utility, board=new_board,moves=None, chance=None)
+        else:
+            if move[1] in new_board['R']:
+                new_board['R'].remove(move[1])
+            elif new_board['B'].count(move[0])==0:
+                new_board['B'][move[0]] = move[1]
+            elif new_board['B'].count(move[0])==1:
+                new_board['B'][move[0]] = None
+            new_utility = self.compute_utility(new_board)
+            print(new_board,"resfinalB")
+            return StochasticGameState(to_move='R', utility=new_utility, board=new_board,moves=None, chance=None)
 
     def utility(self, state, player):
         # Task 2.2
@@ -168,13 +191,15 @@ class MehrSteine(StochasticGame):
         # Task 2.5
         # Return a state resulting from the chance outcome.
         # Replace the line below with your code.
-        raise NotImplementedError
+        print(state.to_move,chance,"outcome")
+        move=self.compute_moves(state.board, state.to_move, chance)
+        return StochasticGameState(to_move=state.to_move, utility=state.utility, board=state.board, moves=move, chance=chance)
 
     def probability(self, chance):
         # Task 2.6
         # Return the probability of a chance outcome.
         # Replace the line below with your code.
-        raise NotImplementedError
+        return 1 / self.num_piece
 
 def stochastic_monte_carlo_tree_search(state, game, playout_policy, N=1000):
 

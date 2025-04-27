@@ -337,8 +337,11 @@ class StochasticGame(Game):
         while True:
             for player in players:
                 chance = random.choice(self.chances(state))
+                print('wtf')
                 state = self.outcome(state, chance)
+                print(state,"why1")
                 move = player(self, state)
+                print(move,"why2")
                 state = self.result(state, move)
                 if self.terminal_test(state):
                     self.display(state)
